@@ -123,6 +123,9 @@
     const { Engine, Render, Runner, World, Bodies, Events } = Matter;
 
     engine = Engine.create();
+    engine.gravity.scale = 0.0002; // <- very slow
+ // ← this line controls fall speed
+
     world = engine.world;
 
     const canvas = document.getElementById("plinkoCanvas");
@@ -151,37 +154,38 @@
     const wallOptions = { isStatic: true, render: { fillStyle: "#111" } };
     World.add(world, [
       Bodies.rectangle(canvasWidth / 2, 0, canvasWidth, 5, wallOptions),
-      Bodies.rectangle(
-        canvasWidth / 2,
-        canvasHeight,
-        canvasWidth,
-        5,
-        wallOptions
-      ),
-      Bodies.rectangle(0, canvasHeight / 2, 5, canvasHeight, wallOptions),
-      Bodies.rectangle(
-        canvasWidth,
-        canvasHeight / 2,
-        5,
-        canvasHeight,
-        wallOptions
-      ),
+      // Bodies.rectangle(
+      //   canvasWidth / 2,
+      //   canvasHeight,
+      //   canvasWidth,
+      //   5,
+      //   wallOptions
+      // ),
+      // Bodies.rectangle(0, canvasHeight / 2, 5, canvasHeight, wallOptions),
+      // Bodies.rectangle(
+      //   canvasWidth,
+      //   canvasHeight / 2,
+      //   5,
+      //   canvasHeight,
+      //   wallOptions
+      // ),
     ]);
 
     const binCount = 9;
     const binWidth = canvasWidth / binCount;
 
     const binColors = [
-      "#FF0000",
-      "#FF7F00",
-      "#FFFF00",
-      "#00FF00",
-      "#0000FF",
-      "#4B0082",
-      "#8B00FF",
-      "#FF1493",
-      "#00CED1",
-    ];
+  "#1f1f1f", // Charcoal
+  "#2b2d42", // Midnight Indigo
+  "#3a506b", // Steel Blue
+  "#5bc0be", // Teal Cyan
+  "#6fffe9", // Neon Aqua
+  "#4ecdc4", // Mint Green
+  "#3f88c5", // Soft Blue
+  "#8338ec", // Electric Purple
+  "#ff006e", // Hot Pink Accent
+];
+
     const binLabels = [
       "x0.5",
       "x1",
