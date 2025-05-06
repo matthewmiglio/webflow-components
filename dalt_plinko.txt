@@ -81,42 +81,40 @@
 const binColors = ['#FF0000', '#FF7F00', '#FFFF00', '#00FF00', '#0000FF', '#4B0082', '#8B00FF', '#FF1493', '#00CED1'];
 const binLabels = ['x0.5', 'x1', 'x1.5', 'x2', 'x3', 'x2', 'x1.5', 'x1', 'x0.5'];
 
-const canvasOffsetLeft = canvas.getBoundingClientRect().left;
-const canvasOffsetTop = canvas.getBoundingClientRect().top;
-
 const binThickness = 10;
-const edgePadding = binThickness / 2;
+const binOffset = binWidth / 2; // center each bin wall in its slot
+
+// Clear old labels if replaying
+document.querySelectorAll('.bin-label').forEach(el => el.remove());
 
 for (let i = 0; i <= binCount; i++) {
   const x = i * binWidth;
-  // Clamp to avoid touching canvas edges
-  const clampedX = Math.max(edgePadding, Math.min(canvasWidth - edgePadding, x));
 
-  const bin = Bodies.rectangle(clampedX, canvasHeight - 20, binThickness, 80, {
+  // Center each bin wall in its lane
+  const bin = Bodies.rectangle(x, canvasHeight - 40, binThickness, 80, {
     isStatic: true,
     render: { fillStyle: binColors[i % binColors.length] }
   });
-
-
-
-
-
   bins.push(bin);
   World.add(world, bin);
 
-  // Add HTML text below each bin
-  const label = document.createElement('div');
-  label.textContent = binLabels[i % binLabels.length];
-  label.style.position = 'absolute';
-  label.style.top = `${canvasOffsetTop + canvasHeight - 5}px`;
-  label.style.left = `${canvasOffsetLeft + i * binWidth - 12}px`;
-  label.style.color = '#111';
-  label.style.fontSize = '12px';
-  label.style.fontWeight = 'bold';
-  label.style.pointerEvents = 'none';
-  label.style.userSelect = 'none';
-  document.body.appendChild(label);
+  // Add HTML label under each gap between bins (i.e. under bin i)
+  if (i < binCount) {
+    const label = document.createElement('div');
+    label.className = 'bin-label';
+    label.textContent = binLabels[i % binLabels.length];
+    label.style.position = 'absolute';
+    label.style.top = `${canvas.getBoundingClientRect().top + canvasHeight + 5}px`;
+    label.style.left = `${canvas.getBoundingClientRect().left + x + binOffset - 20}px`;
+    label.style.color = '#111';
+    label.style.fontSize = '12px';
+    label.style.fontWeight = 'bold';
+    label.style.pointerEvents = 'none';
+    label.style.userSelect = 'none';
+    document.body.appendChild(label);
+  }
 }
+
 
 
 
