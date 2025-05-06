@@ -38,7 +38,19 @@
       "
     />
 
-    <canvas id="plinkoCanvas" width="400" height="600"></canvas>
+    <div
+      id="plinkoCanvasWrapper"
+      style="
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+        border-radius: 12px;
+        box-shadow: 0 0 20px #00f0ff;
+      "
+    >
+      <canvas id="plinkoCanvas" style="width: 100%; display: block"></canvas>
+    </div>
+
     <div
       style="
         margin-top: 16px;
@@ -97,8 +109,8 @@
     world,
     ball,
     bins = [],
-    canvasWidth = 400,
-    canvasHeight = 600;
+    canvasWidth,
+    canvasHeight;
 
   setTimeout(() => {
     document.getElementById("plinkoPopup").style.display = "flex";
@@ -123,12 +135,20 @@
     const { Engine, Render, Runner, World, Bodies, Events } = Matter;
 
     engine = Engine.create();
-    engine.gravity.scale = 0.0002; // <- very slow
-    // ← this line controls fall speed
+    engine.gravity.scale = 0.0002;
 
     world = engine.world;
 
     const canvas = document.getElementById("plinkoCanvas");
+    const wrapper = document.getElementById("plinkoWrapper");
+
+    // Responsive canvas sizing
+    const canvasWrapper = document.getElementById("plinkoCanvasWrapper");
+    canvasWidth = canvasWrapper.offsetWidth;
+    canvasHeight = canvasWidth * 1.5;
+    canvas.width = canvasWidth; // actual resolution
+    canvas.height = canvasHeight; // actual resolution
+
     const ctx = canvas.getContext("2d");
 
     render = Render.create({
@@ -138,7 +158,7 @@
         width: canvasWidth,
         height: canvasHeight,
         wireframes: false,
-        background: "linear-gradient(180deg, #000000 0%, #00c6ff 100%)", // ← updated!
+        background: "linear-gradient(180deg, #000000 0%, #00c6ff 100%)",
       },
     });
 
@@ -158,7 +178,6 @@
 
     const binCount = 9;
     const binWidth = canvasWidth / binCount;
-
     const binColors = Array(9).fill("#000000");
 
     const binLabels = [
@@ -206,8 +225,8 @@
     ball = Bodies.circle(getRandomX(), 30, 12, {
       restitution: 1.3,
       render: {
-        fillStyle: "#ffff33", // Neon-ish yellow
-        strokeStyle: "#ffff33", // Optional outline in same tone
+        fillStyle: "#ffff33",
+        strokeStyle: "#ffff33",
         lineWidth: 1,
       },
     });
@@ -247,8 +266,8 @@
     function getRandomX() {
       let x;
       do {
-        x = Math.floor(Math.random() * (360 - 40 + 1)) + 40;
-      } while (x > 180 && x < 220);
+        x = Math.floor(Math.random() * (canvasWidth - 40 - 40 + 1)) + 40;
+      } while (x > canvasWidth / 2 - 20 && x < canvasWidth / 2 + 20);
       return x;
     }
   }
