@@ -193,7 +193,7 @@
           const peg = Bodies.circle(x, 100 + row * 60, 1, {
             isStatic: true,
             render: {
-              fillStyle: "#bbb",
+              fillStyle: "#ffff33",
               strokeStyle: "#999",
               lineWidth: 1,
             },
@@ -204,8 +204,12 @@
     }
 
     ball = Bodies.circle(getRandomX(), 30, 12, {
-      restitution: 0.6,
-      render: { fillStyle: "#f00" },
+      restitution: 1.3,
+      render: {
+        fillStyle: "#ffff33", // Neon-ish yellow
+        strokeStyle: "#ffff33", // Optional outline in same tone
+        lineWidth: 1,
+      },
     });
     World.add(world, ball);
 
