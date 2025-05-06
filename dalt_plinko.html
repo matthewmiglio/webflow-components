@@ -38,11 +38,7 @@
       "
     />
 
-    <canvas
-      id="plinkoCanvas"
-      width="400"
-      height="600"
-    ></canvas>
+    <canvas id="plinkoCanvas" width="400" height="600"></canvas>
     <div
       style="
         margin-top: 16px;
@@ -129,9 +125,11 @@
     world = engine.world;
 
     const canvas = document.getElementById("plinkoCanvas");
+    const ctx = canvas.getContext("2d");
+
     render = Render.create({
-      canvas: canvas,
-      engine: engine,
+      canvas,
+      engine,
       options: {
         width: canvasWidth,
         height: canvasHeight,
@@ -190,39 +188,15 @@
       "x0.5",
     ];
 
-    const binThickness = 10;
-    const binOffset = binWidth / 2;
-
-    document.querySelectorAll(".bin-label").forEach((el) => el.remove());
-
+    bins = [];
     for (let i = 0; i <= binCount; i++) {
       const x = i * binWidth;
-
-      const bin = Bodies.rectangle(x, canvasHeight - 40, binThickness, 80, {
+      const bin = Bodies.rectangle(x, canvasHeight - 40, 10, 80, {
         isStatic: true,
         render: { fillStyle: binColors[i % binColors.length] },
       });
       bins.push(bin);
       World.add(world, bin);
-
-      if (i < binCount) {
-        const label = document.createElement("div");
-        label.className = "bin-label";
-        label.textContent = binLabels[i % binLabels.length];
-        label.style.position = "absolute";
-        label.style.top = `${
-          canvas.getBoundingClientRect().top + canvasHeight + 5
-        }px`;
-        label.style.left = `${
-          canvas.getBoundingClientRect().left + x + binOffset - 20
-        }px`;
-        label.style.color = "#111";
-        label.style.fontSize = "12px";
-        label.style.fontWeight = "bold";
-        label.style.pointerEvents = "none";
-        label.style.userSelect = "none";
-        document.body.appendChild(label);
-      }
     }
 
     const pegOffsetX = 25;
@@ -244,14 +218,6 @@
       }
     }
 
-    function getRandomX() {
-      let x;
-      do {
-        x = Math.floor(Math.random() * (360 - 40 + 1)) + 40;
-      } while (x > 180 && x < 220);
-      return x;
-    }
-
     ball = Bodies.circle(getRandomX(), 30, 12, {
       restitution: 0.6,
       render: { fillStyle: "#f00" },
@@ -266,5 +232,28 @@
         ).textContent = `You landed in bin #${binIndex + 1}!`;
       }
     });
+
+    Events.on(render, "afterRender", () => {
+      ctx.save();
+      ctx.font = "bold 12px sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillStyle = "#000";
+
+      for (let i = 0; i < binCount; i++) {
+        const label = binLabels[i % binLabels.length];
+        const x = i * binWidth + binWidth / 2;
+        ctx.fillText(label, x, canvasHeight - 5);
+      }
+
+      ctx.restore();
+    });
+
+    function getRandomX() {
+      let x;
+      do {
+        x = Math.floor(Math.random() * (360 - 40 + 1)) + 40;
+      } while (x > 180 && x < 220);
+      return x;
+    }
   }
 </script>
