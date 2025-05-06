@@ -49,21 +49,22 @@
       "
     >
       <button
-        id="replayBtn"
-        onclick="replayPlinko()"
+        id="claimPrizeBtn"
+        disabled
         style="
-          background: #111;
+          background: #999;
           color: #fff;
           border: none;
           padding: 10px 18px;
           border-radius: 6px;
           font-weight: 600;
-          cursor: pointer;
-          transition: 0.2s;
+          cursor: not-allowed;
+          transition: 0.3s;
         "
       >
-        Replay
+        Claim Prize
       </button>
+
       <button
         onclick="closePlinko()"
         style="
@@ -137,6 +138,11 @@
         background: "linear-gradient(180deg, #ffffff 0%, #e0f7ff 100%)",
       },
     });
+
+    const claimBtn = document.getElementById("claimPrizeBtn");
+    claimBtn.disabled = true;
+    claimBtn.style.background = "#999";
+    claimBtn.style.cursor = "not-allowed";
 
     Render.run(render);
     runner = Runner.create();
@@ -224,12 +230,19 @@
     });
     World.add(world, ball);
 
+    let claimed = false;
+
     Events.on(engine, "afterUpdate", function () {
-      if (ball.position.y > canvasHeight - 60) {
+      if (!claimed && ball.position.y > canvasHeight - 60) {
+        claimed = true;
         const binIndex = Math.floor(ball.position.x / binWidth);
         document.getElementById(
           "resultText"
         ).textContent = `You landed in bin #${binIndex + 1}!`;
+
+        claimBtn.disabled = false;
+        claimBtn.style.background = "#28a745";
+        claimBtn.style.cursor = "pointer";
       }
     });
 
@@ -256,4 +269,11 @@
       return x;
     }
   }
+
+  document.getElementById("claimPrizeBtn").addEventListener("click", () => {
+    if (!document.getElementById("claimPrizeBtn").disabled) {
+      alert("Prize claimed! 🎉");
+      // Optionally call replayPlinko() or trigger reward logic
+    }
+  });
 </script>
