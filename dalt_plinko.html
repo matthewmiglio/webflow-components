@@ -110,20 +110,10 @@
     canvasWidth,
     canvasHeight;
 
-  
-
   function closePlinko() {
     document.getElementById("plinkoPopup").style.display = "none";
     Matter.Render.stop(render);
     Matter.Runner.stop(runner);
-  }
-
-  function replayPlinko() {
-    closePlinko();
-    setTimeout(() => {
-      document.getElementById("plinkoPopup").style.display = "flex";
-      startPlinko();
-    }, 300);
   }
 
   function startPlinko() {
